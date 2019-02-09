@@ -13,6 +13,20 @@ public abstract class Product {
 		this.name = name;
 		this.price = price;
 		this.taxPercent = tax;
+		
+	
+		if( name == null ) 
+			throw new IllegalArgumentException("Name is equal null");
+		
+		if( price == null ) 
+			throw new IllegalArgumentException("Price is equal null");
+		
+		if(name.isEmpty())
+			throw new IllegalArgumentException("Name is empty");
+		
+		if( price.intValue() < 0 )
+			throw new IllegalArgumentException("Price is <0");
+		
 	}
 
 	public String getName() {
