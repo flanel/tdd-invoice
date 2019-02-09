@@ -27,7 +27,7 @@ public class Invoice {
 	}
 	
 
-	public BigDecimal getSubtotal() {
+	public BigDecimal getTotalNetPrice() {
 		BigDecimal subtotal = new BigDecimal(0);
 
 		for(Product product : products) {
