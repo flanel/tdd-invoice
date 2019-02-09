@@ -14,7 +14,9 @@ public class Invoice {
 
 	public void addProduct(Product product, Integer quantity) {
 		// TODO: implement
+		return; 
 	}
+	
 
 	public BigDecimal getSubtotal() {
 		return null;
