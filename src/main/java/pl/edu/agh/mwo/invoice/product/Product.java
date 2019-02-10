@@ -72,5 +72,9 @@ public abstract class Product {
 		return true;
 	}
 	
-	
+	if( product instanceof HasExcise) {
+		// if sprawdza czy instancja produktu jest interfejsem <-- doczytać o instanceof i HasExcise
+		// doczytać też o automatycznym tworzeniu equalsów i hashCodów
+		// doczytać o interfejsach
+	}
 }
