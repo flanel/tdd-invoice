@@ -1,13 +1,13 @@
 package pl.edu.agh.mwo.invoice;
 
 import java.math.BigDecimal;
+import java.util.regex.Matcher;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import pl.edu.agh.mwo.invoice.Invoice;
 import pl.edu.agh.mwo.invoice.product.DairyProduct;
 import pl.edu.agh.mwo.invoice.product.OtherProduct;
 import pl.edu.agh.mwo.invoice.product.Product;
@@ -104,4 +104,131 @@ public class InvoiceTest {
 	public void testInvoiceWithNegativeQuantity() {
 		invoice.addProduct(new DairyProduct("Zsiadle mleko", new BigDecimal("5.55")), -1);
 	}
+	
+	@Test
+	public void testInvoiceHasNumber() {
+		Integer number = invoice.getInvoiceNumber();
+		
+		Assert.assertNotNull(number);
+	}
+	
+	@Test
+	public void testInvoiceNumberIsGreaterThenZero() {
+		Integer number = invoice.getInvoiceNumber();
+		
+		Assert.assertNotEquals(number, Matchers.greaterThan(0));
+	}
+	
+	@Test
+	public void testInvoiceNumberInSequence() {
+		Invoice invoice1 = new Invoice();
+		Invoice invoice2 = new Invoice();
+				
+		Integer number1 = invoice1.getInvoiceNumber();
+		Integer number2 = invoice2.getInvoiceNumber();
+
+		Assert.assertThat(number2, Matchers.greaterThan(number1));
+	}
+	
+	@Test
+	public void testInvoiceNumberAreNotTheSame() {
+		Invoice invoice1 = new Invoice();
+		Invoice invoice2 = new Invoice();
+		Integer number1 = invoice1.getInvoiceNumber();
+		Integer number2 = invoice2.getInvoiceNumber();
+		
+		Assert.assertNotEquals(number1, number2);
+	}
+	
+	@Test 
+	public void testInvoiceNumberOfSingleInvoice() {
+		Integer number1 = invoice.getInvoiceNumber();
+		Integer number2 = invoice.getInvoiceNumber();
+		
+		Assert.assertEquals(number1,  number2);
+	}
+	
+	@Test
+	public void testPrintedInvoiceHasNumber() {
+		String printedInvoice = invoice.getAsText();
+		
+		String number = invoice.getInvoiceNumber().toString();
+		Assert.assertThat(
+				printedInvoice, 
+				Matchers.containsString("nr " + number));
+		
+	}
+	
+	@Test
+	public void testPrintedProductDetails() {
+		
+		TaxFreeProduct tfp = new TaxFreeProduct("Chleb", new BigDecimal(5));
+		invoice.addProduct(tfp , 10);
+		
+		String productDetails = invoice.getAsText();
+		
+		Assert.assertThat(productDetails, Matchers.containsString("Chleb 10 50.00"));
+	}
+	
+	@Test
+	public void testPrintedManyProductDetails() {
+		
+		invoice.addProduct(new TaxFreeProduct("Bulka", new BigDecimal(1)) , 10);
+		invoice.addProduct(new TaxFreeProduct("Maslo", new BigDecimal(2)) , 10);
+		invoice.addProduct(new TaxFreeProduct("Banan", new BigDecimal(5)) , 10);
+		
+		String productDetails = invoice.getAsText();
+		
+		Assert.assertThat(productDetails, Matchers.containsString("Bulka 10 10.00\nMaslo 10 20.00\nBanan 10 50.00"));
+	}
+	
+	@Test
+	public void testPrintedProductsTotalQuantity() {
+		invoice.addProduct(new TaxFreeProduct("Bulka", new BigDecimal(1)) , 10);
+		invoice.addProduct(new TaxFreeProduct("Maslo", new BigDecimal(2)) , 10);
+		invoice.addProduct(new TaxFreeProduct("Banan", new BigDecimal(5)) , 10);
+		
+		String productDetails = invoice.getAsText();
+		
+		Assert.assertThat(productDetails, Matchers.containsString("Liczba pozycji: 30"));
+
+	}
+	
+	@Test
+	public void testAddingTheSameProductTwice() {
+		invoice.addProduct(new TaxFreeProduct("Bulka", new BigDecimal(1)) , 10);
+		invoice.addProduct(new TaxFreeProduct("Bulka", new BigDecimal(1)) , 2);
+
+		String productDetails = invoice.getAsText();
+		
+		Assert.assertThat(productDetails, Matchers.containsString("Bulka 12 12.00"));
+
+	}
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
